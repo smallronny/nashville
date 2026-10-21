@@ -1,0 +1,471 @@
+---
+import { packages, site } from '../data/site';
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+const formspreeId = (import.meta.env.PUBLIC_FORMSPREE_ID ?? '').trim();
+const isFormConfigured =
+  formspreeId.length > 0 && !['xxxxxxxx', 'REPLACE_ME', 'TU_ID'].includes(formspreeId);
+const formAction = isFormConfigured
+  ? `https://formspree.io/f/${formspreeId}`
+  : `mailto:${site.email}`;
+
+const whatsappHref = `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(
+  "Hi Nashville Crafting Club! I'd like to plan a craft party.",
+)}`;
+
+const contactMethods = [
+  {
+    icon: 'mail',
+    label: 'Email us',
+    value: site.email,
+    href: `mailto:${site.email}`,
+    external: false,
+  },
+  {
+    icon: 'phone',
+    label: 'Call or text',
+    value: site.phoneDisplay,
+    href: `tel:${site.phoneHref}`,
+    external: false,
+  },
+  {
+    icon: 'whatsapp',
+    label: 'WhatsApp',
+    value: 'Message us directly',
+    href: whatsappHref,
+    external: true,
+  },
+] as const;
+---
+
+<section id="contact" class="section relative overflow-hidden bg-paper" aria-labelledby="contact-title">
+  <div
+    class="pointer-events-none absolute -right-24 top-20 h-80 w-80 rounded-full bg-ocean/10 blur-2xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container-page relative">
+    <div
+      class="relative overflow-hidden rounded-[2.5rem] border-2 border-ink/10 bg-cream p-6 shadow-soft sm:p-10 lg:p-14"
+    >
+      <div
+        class="dot-grid pointer-events-none absolute -right-5 -top-5 h-36 w-36 opacity-25"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="pointer-events-none absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-sun/25 blur-2xl"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative grid gap-12 lg:grid-cols-[0.86fr_1.14fr] lg:gap-16">
+        <div class="reveal">
+          <p class="eyebrow">Let's party</p>
+          <h2 id="contact-title" class="display-title mt-5">
+            Tell us what you're making.
+          </h2>
+          <p class="lead mt-5 max-w-md">
+            Share your date, your crew, and the kind of celebration you have in mind. We'll
+            get back to you with availability and next steps.
+          </p>
+
+          <div class="mt-8 space-y-3">
+            {
+              contactMethods.map((method) => (
+                <a
+                  href={method.href}
+                  target={method.external ? '_blank' : undefined}
+                  rel={method.external ? 'noopener noreferrer' : undefined}
+                  class="group flex items-center gap-4 rounded-2xl border border-ink/10 bg-paper px-4 py-3.5 transition hover:-translate-y-0.5 hover:border-ink/25 hover:shadow-soft"
+                >
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-mint text-ink transition group-hover:bg-sun">
+                    <Icon name={method.icon} size={19} />
+                  </span>
+                  <span class="min-w-0">
+                    <span class="block text-[0.65rem] font-black uppercase tracking-[0.16em] text-ink/45">
+                      {method.label}
+                    </span>
+                    <span class="block truncate text-sm font-extrabold text-ink">
+                      {method.value}
+                    </span>
+                  </span>
+                  <Icon
+                    name="arrow-up-right"
+                    size={16}
+                    class="ml-auto shrink-0 text-ink/30 transition group-hover:text-ink"
+                  />
+                </a>
+              ))
+            }
+          </div>
+
+          <div class="mt-6 flex items-start gap-3 rounded-2xl px-1 text-sm font-semibold text-ink/60">
+            <Icon name="map-pin" size={18} class="mt-0.5 shrink-0 text-coral-dark" />
+            <p>
+              Serving {site.areaServed}. We bring the craft studio to your home, park, or
+              favorite local spot.
+            </p>
+          </div>
+
+          <div class="mt-7 flex items-center gap-3">
+            <span class="text-xs font-black uppercase tracking-[0.16em] text-ink/40">
+              Follow along
+            </span>
+            <span class="h-px flex-1 bg-ink/10"></span>
+            <a
+              href={site.socials.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 bg-paper text-ink transition hover:border-ink hover:bg-sun"
+              aria-label="Nashville Crafting Club on Instagram"
+            >
+              <Icon name="instagram" size={17} />
+            </a>
+            <a
+              href={site.socials.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 bg-paper text-ink transition hover:border-ink hover:bg-sun"
+              aria-label="Nashville Crafting Club on Facebook"
+            >
+              <Icon name="facebook" size={17} />
+            </a>
+          </div>
+        </div>
+
+        <div class="reveal" style="--reveal-delay: 80ms">
+          <div class="rounded-[2rem] border border-ink/10 bg-paper p-6 shadow-lift sm:p-8">
+            <div data-form-wrapper>
+              <div class="mb-6">
+                <h3 class="font-display text-2xl font-semibold tracking-[-0.02em]">
+                  Party inquiry
+                </h3>
+                <p class="mt-1 text-sm font-semibold text-ink/50">
+                  Fields marked <span class="text-coral-dark">*</span> are required.
+                </p>
+              </div>
+
+              <form
+                action={formAction}
+                method="post"
+                enctype={isFormConfigured ? undefined : 'text/plain'}
+                class="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2"
+                data-contact-form
+                data-endpoint={isFormConfigured ? formAction : ''}
+                data-email={site.email}
+              >
+                <input
+                  type="hidden"
+                  name="_subject"
+                  value={`New party inquiry from ${site.name}`}
+                />
+                <div class="honeypot" aria-hidden="true">
+                  <label for="company-website">Leave this field empty</label>
+                  <input
+                    id="company-website"
+                    type="text"
+                    name="_gotcha"
+                    tabindex="-1"
+                    autocomplete="off"
+                  />
+                </div>
+
+                <div>
+                  <label for="name" class="field-label">Your name <span class="text-coral-dark">*</span></label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    class="field"
+                    placeholder="Jamie Rivera"
+                  />
+                </div>
+
+                <div>
+                  <label for="email" class="field-label">Email <span class="text-coral-dark">*</span></label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    class="field"
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label for="phone" class="field-label">
+                    Phone <span class="font-semibold text-ink/35">(optional)</span>
+                  </label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    autocomplete="tel"
+                    inputmode="tel"
+                    class="field"
+                    placeholder="(615) 555-0123"
+                  />
+                </div>
+
+                <div>
+                  <label for="event-date" class="field-label">
+                    Event date <span class="font-semibold text-ink/35">(optional)</span>
+                  </label>
+                  <input
+                    id="event-date"
+                    name="eventDate"
+                    type="date"
+                    class="field"
+                    data-event-date
+                  />
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label for="package" class="field-label">
+                    Party package <span class="font-semibold text-ink/35">(optional)</span>
+                  </label>
+                  <div class="relative">
+                    <select id="package" name="package" class="field appearance-none pr-11">
+                      <option value="">Not sure yet</option>
+                      {packages.map((pkg) => <option value={pkg.name}>{pkg.name} — {pkg.price}</option>)}
+                      <option value="Custom celebration">Custom celebration</option>
+                    </select>
+                    <Icon
+                      name="chevron-down"
+                      size={18}
+                      class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink/45"
+                    />
+                  </div>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <label for="message" class="field-label">
+                    Tell us about your party <span class="text-coral-dark">*</span>
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="4"
+                    required
+                    class="field resize-y"
+                    placeholder="Date, number of kids, favorite craft, venue…"
+                  ></textarea>
+                </div>
+
+                <div class="sm:col-span-2">
+                  <button
+                    type="submit"
+                    class="btn btn-primary w-full disabled:cursor-not-allowed disabled:opacity-70"
+                    data-submit-button
+                  >
+                    <span data-submit-label>Send my inquiry</span>
+                    <span
+                      class="hidden h-4 w-4 animate-spin rounded-full border-2 border-paper/40 border-t-paper"
+                      data-submit-spinner
+                      aria-hidden="true"
+                    ></span>
+                    <span data-submit-icon><Icon name="send" size={17} /></span>
+                  </button>
+
+                  <p
+                    class="form-status hidden"
+                    role="status"
+                    aria-live="polite"
+                    data-form-status
+                  ></p>
+
+                  <p class="mt-3 text-center text-[0.7rem] leading-relaxed text-ink/45">
+                    We only use your details to reply to your inquiry. Prefer to chat?
+                    <a
+                      href={whatsappHref}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="font-extrabold text-ink underline decoration-coral decoration-2 underline-offset-2"
+                    >
+                      Message us on WhatsApp
+                    </a>.
+                  </p>
+
+                  {
+                    !isFormConfigured && (
+                      <p class="mt-2 rounded-xl bg-cream px-3 py-2 text-center text-[0.68rem] font-semibold leading-relaxed text-ink/55">
+                        Online form delivery is being connected. For now, submitting opens
+                        your email app—or message us on WhatsApp for the fastest reply.
+                      </p>
+                    )
+                  }
+                </div>
+              </form>
+            </div>
+
+            <div class="hidden py-6 text-center" data-form-success tabindex="-1">
+              <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-ink bg-mint text-ink shadow-sticker">
+                <Icon name="check" size={30} strokeWidth={2.4} />
+              </span>
+              <h3 class="mt-5 font-display text-3xl font-semibold tracking-[-0.03em]">
+                Message sent!
+              </h3>
+              <p class="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-ink/65">
+                Thanks for sharing your party plans. We'll be in touch soon. Want a faster
+                reply? Send us a note on WhatsApp.
+              </p>
+              <div class="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <WhatsAppButton
+                  label="Chat on WhatsApp"
+                  message="Hi Nashville Crafting Club! I just sent a party inquiry through your website."
+                />
+                <button type="button" class="btn btn-secondary" data-form-reset>
+                  Send another message
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  const formWrapper = document.querySelector<HTMLElement>('[data-form-wrapper]');
+
+  if (form && formWrapper) {
+    const endpoint = form.dataset.endpoint?.trim();
+    const fallbackEmail = form.dataset.email ?? '';
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const submitButton = form.querySelector<HTMLButtonElement>('[data-submit-button]');
+    const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]');
+    const submitSpinner = form.querySelector<HTMLElement>('[data-submit-spinner]');
+    const submitIcon = form.querySelector<HTMLElement>('[data-submit-icon]');
+    const dateInput = form.querySelector<HTMLInputElement>('[data-event-date]');
+    const successPanel = document.querySelector<HTMLElement>('[data-form-success]');
+    const resetButton = document.querySelector<HTMLButtonElement>('[data-form-reset]');
+
+    if (dateInput) {
+      dateInput.min = new Date().toISOString().split('T')[0] ?? '';
+    }
+
+    const showStatus = (message: string, state: 'error' | 'success' = 'error') => {
+      if (!status) return;
+      status.textContent = message;
+      status.dataset.state = state;
+      status.classList.remove('hidden');
+    };
+
+    const setLoading = (loading: boolean) => {
+      form.setAttribute('aria-busy', String(loading));
+      if (submitButton) submitButton.disabled = loading;
+      submitLabel?.classList.toggle('hidden', loading);
+      submitSpinner?.classList.toggle('hidden', !loading);
+      submitIcon?.classList.toggle('hidden', loading);
+    };
+
+    // Preselect a package when a visitor clicks "Choose…" on a pricing card.
+    document.querySelectorAll<HTMLElement>('[data-package-choice]').forEach((choice) => {
+      choice.addEventListener('click', () => {
+        const select = form.querySelector<HTMLSelectElement>('[name="package"]');
+        const chosenPackage = choice.dataset.packageChoice;
+        if (!select || !chosenPackage) return;
+
+        const matchingOption = Array.from(select.options).find(
+          (option) => option.value === chosenPackage,
+        );
+        if (matchingOption) {
+          select.value = chosenPackage;
+          select.classList.add('field-highlight');
+          window.setTimeout(() => select.classList.remove('field-highlight'), 1600);
+        }
+      });
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status?.classList.add('hidden');
+
+      if (!form.reportValidity()) return;
+
+      const formData = new FormData(form);
+      const name = String(formData.get('name') ?? '').trim();
+
+      // If Formspree has not been configured, the form still has a useful fallback.
+      if (!endpoint) {
+        const fieldLabels: Array<[string, string]> = [
+          ['name', 'Name'],
+          ['email', 'Email'],
+          ['phone', 'Phone'],
+          ['eventDate', 'Event date'],
+          ['package', 'Package'],
+          ['message', 'Message'],
+        ];
+        const body = fieldLabels
+          .map(([key, label]) => {
+            const value = String(formData.get(key) ?? '').trim();
+            return value ? `${label}: ${value}` : '';
+          })
+          .filter(Boolean)
+          .join('\n');
+
+        window.location.href = `mailto:${fallbackEmail}?subject=${encodeURIComponent(
+          `Party inquiry from ${name || 'the website'}`,
+        )}&body=${encodeURIComponent(body)}`;
+        showStatus(
+          'Opening your email app with your party details. You can also message us on WhatsApp for the fastest reply.',
+          'success',
+        );
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData,
+          headers: { Accept: 'application/json' },
+        });
+
+        if (!response.ok) {
+          let message = 'Something went wrong. Please try again or message us on WhatsApp.';
+          try {
+            const payload = (await response.json()) as {
+              errors?: Array<{ message?: string }>;
+            };
+            if (Array.isArray(payload.errors) && payload.errors.length > 0) {
+              message = payload.errors.map((item) => item.message).filter(Boolean).join(' ');
+            }
+          } catch {
+            // Keep the friendly default message if the response is not JSON.
+          }
+          throw new Error(message);
+        }
+
+        form.reset();
+        formWrapper.classList.add('hidden');
+        if (successPanel) {
+          successPanel.classList.remove('hidden');
+          successPanel.focus();
+        }
+      } catch (error) {
+        showStatus(
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong. Please try again or message us on WhatsApp.',
+          'error',
+        );
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    resetButton?.addEventListener('click', () => {
+      successPanel?.classList.add('hidden');
+      formWrapper.classList.remove('hidden');
+      form.querySelector<HTMLInputElement>('[name="name"]')?.focus();
+    });
+  }
+</script>

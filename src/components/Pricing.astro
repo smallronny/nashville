@@ -1,0 +1,145 @@
+---
+import { packages } from '../data/site';
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+
+const customMessage =
+  "Hi Nashville Crafting Club! I'd like to ask about a custom craft party.";
+---
+
+<section id="pricing" class="section relative overflow-hidden bg-ink text-paper" aria-labelledby="pricing-title">
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="absolute -right-40 -top-40 h-[34rem] w-[34rem] rounded-full bg-ocean/20 blur-3xl"></div>
+    <div class="absolute -bottom-44 -left-32 h-[30rem] w-[30rem] rounded-full bg-coral/15 blur-3xl"></div>
+    <div class="dot-grid absolute right-10 top-1/2 h-48 w-40 opacity-10"></div>
+    <svg class="absolute left-[6%] top-20 h-20 w-20 text-sun/70" viewBox="0 0 64 64" fill="none">
+      <path
+        d="M32 4c2.8 16.8 9.2 23.2 26 26-16.8 2.8-23.2 9.2-26 26-2.8-16.8-9.2-23.2-26-26C22.8 27.2 29.2 20.8 32 4Z"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </div>
+
+  <div class="container-page relative">
+    <div class="grid gap-7 lg:grid-cols-[0.95fr_1.05fr] lg:items-end lg:gap-16">
+      <div class="reveal">
+        <p class="eyebrow !text-sun">Party packages</p>
+        <h2 id="pricing-title" class="display-title mt-5 text-paper">
+          Simple packages, seriously fun parties.
+        </h2>
+      </div>
+      <div class="reveal lg:pb-2" style="--reveal-delay: 90ms">
+        <p class="max-w-xl text-lg leading-relaxed text-paper/70">
+          Every package is designed for up to 10 kids and includes all the materials for a
+          guided craft experience. Pick a favorite or tell us what you're dreaming up.
+        </p>
+        <p class="mt-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-[0.16em] text-paper/45">
+          <Icon name="check" size={14} />
+          Prices in USD
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-12 grid items-stretch gap-5 lg:mt-16 lg:grid-cols-3 lg:gap-6">
+      {
+        packages.map((pkg, index) => (
+          <article
+            class:list={[
+              'reveal relative flex flex-col rounded-[2rem] p-7 transition duration-300 hover:-translate-y-1.5 hover:shadow-lift sm:p-8',
+              pkg.featured
+                ? 'border-2 border-ink bg-coral text-ink shadow-[7px_8px_0_0_#f7c65f] lg:-translate-y-3'
+                : 'border border-paper/20 bg-paper text-ink',
+            ]}
+            style={`--reveal-delay: ${index * 80}ms`}
+          >
+            {pkg.badge && (
+              <span class="absolute -top-4 right-5 inline-flex rotate-[-2deg] items-center gap-1.5 rounded-full border-2 border-ink bg-sun px-3.5 py-1.5 text-[0.62rem] font-black uppercase tracking-[0.12em] text-ink shadow-soft">
+                <Icon name="star" size={12} />
+                {pkg.badge}
+              </span>
+            )}
+
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="font-display text-[1.65rem] font-semibold leading-tight tracking-[-0.025em] sm:text-3xl">
+                  {pkg.name}
+                </h3>
+                <p class="mt-1 text-sm font-bold text-ink/55">{pkg.priceNote}</p>
+              </div>
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink/10 bg-cream">
+                <Icon
+                  name={index === 0 ? 'palette' : index === 1 ? 'sparkles' : 'heart'}
+                  size={19}
+                  class="text-ocean-dark"
+                />
+              </span>
+            </div>
+
+            <p class="mt-5 font-display text-5xl font-semibold leading-none tracking-[-0.04em]">
+              {pkg.price}
+              <span class="ml-1 align-middle text-sm font-sans font-extrabold tracking-normal text-ink/45">
+                USD
+              </span>
+            </p>
+
+            <p class="mt-5 text-sm leading-relaxed text-ink/70 sm:text-base">
+              {pkg.description}
+            </p>
+
+            <div class="my-6 border-t-2 border-dashed border-ink/15"></div>
+
+            <ul class="flex-1 space-y-3">
+              {pkg.features.map((feature) => (
+                <li class="flex items-start gap-2.5 text-sm font-semibold leading-snug text-ink/75">
+                  <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink text-paper">
+                    <Icon name="check" size={12} strokeWidth={2.6} />
+                  </span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#contact"
+              class:list={[
+                'btn mt-7 w-full',
+                pkg.featured ? 'btn-primary' : 'btn-secondary',
+              ]}
+              data-package-choice={pkg.name}
+            >
+              Choose {pkg.name}
+              <Icon name="arrow-right" size={17} />
+            </a>
+          </article>
+        ))
+      }
+    </div>
+
+    <div
+      class="reveal mt-8 flex flex-col items-start justify-between gap-6 rounded-[2rem] border border-paper/20 bg-paper/[0.06] px-6 py-6 backdrop-blur-sm sm:flex-row sm:items-center sm:px-8"
+      style="--reveal-delay: 180ms"
+    >
+      <div class="max-w-2xl">
+        <p class="font-display text-2xl font-semibold tracking-[-0.02em] text-paper sm:text-3xl">
+          Have something else in mind?
+        </p>
+        <p class="mt-2 text-sm leading-relaxed text-paper/60 sm:text-base">
+          A different theme, a bigger celebration, or a custom craft? Tell us what you're
+          planning and we'll help shape something that fits.
+        </p>
+      </div>
+      <WhatsAppButton
+        label="Ask about a custom party"
+        message={customMessage}
+        class="shrink-0"
+      />
+    </div>
+
+    <p class="mt-6 text-center text-xs font-semibold text-paper/40">
+      All prices are in USD. Packages are designed for up to 10 kids; contact us to discuss
+      your specific celebration.
+    </p>
+  </div>
+</section>

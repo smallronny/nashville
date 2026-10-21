@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Marquee from '../components/Marquee.astro';
+import Services from '../components/Services.astro';
+import About from '../components/About.astro';
+import Portfolio from '../components/Portfolio.astro';
+import Pricing from '../components/Pricing.astro';
+import FAQ from '../components/FAQ.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { faqs, packages, site } from '../data/site';
+
+const siteUrl = (Astro.site ?? new URL('https://nashvillecraftingclub.com')).href.replace(/\/$/, '');
+const basePath = import.meta.env.BASE_URL;
+const ogImageUrl = new URL(`${basePath}og-image.png`, siteUrl).href;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${siteUrl}/#business`,
+      name: site.name,
+      description: site.description,
+      url: siteUrl,
+      telephone: site.phoneHref,
+      email: site.email,
+      image: ogImageUrl,
+      logo: new URL(`${basePath}apple-touch-icon.png`, siteUrl).href,
+      priceRange: '$$',
+      currenciesAccepted: 'USD',
+      slogan: 'Creating memories, crafting joy.',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: site.city,
+        addressRegion: 'TN',
+        addressCountry: 'US',
+      },
+      areaServed: {
+        '@type': 'City',
+        name: site.city,
+      },
+      sameAs: [site.socials.facebook, site.socials.instagram],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Craft party packages',
+        itemListElement: packages.map((pkg) => ({
+          '@type': 'Offer',
+          name: pkg.name,
+          description: pkg.description,
+          price: pkg.price.replace(/[$,]/g, ''),
+          priceCurrency: 'USD',
+          itemOffered: {
+            '@type': 'Service',
+            name: pkg.name,
+            description: pkg.description,
+            serviceType: "Children's craft party",
+            provider: { '@id': `${siteUrl}/#business` },
+          },
+        })),
+      },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: site.name,
+      description: site.description,
+      inLanguage: 'en-US',
+      publisher: { '@id': `${siteUrl}/#business` },
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': `${siteUrl}/#faq`,
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout
+  title="Nashville Crafting Club | Family Craft Parties in Nashville"
+  description={site.description}
+  schema={schema}
+>
+  <Hero />
+  <Marquee />
+  <Services />
+  <About />
+  <Portfolio />
+  <Pricing />
+  <FAQ />
+  <ContactForm />
+</BaseLayout>

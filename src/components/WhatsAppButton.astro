@@ -1,0 +1,51 @@
+---
+import { site } from '../data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  variant?: 'inline' | 'floating';
+  label?: string;
+  message?: string;
+  class?: string;
+}
+
+const {
+  variant = 'inline',
+  label = 'Chat on WhatsApp',
+  message = site.defaultWhatsAppMessage,
+  class: className,
+} = Astro.props;
+
+// wa.me expects an international number without "+", spaces, or dashes.
+const phone = site.whatsappNumber.replace(/\D/g, '');
+const href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+---
+
+{
+  variant === 'floating' ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class:list={[
+        'whatsapp-float group fixed bottom-4 right-4 z-40 inline-flex items-center gap-2.5 rounded-full border-2 border-ink bg-[#25d366] px-4 py-3.5 text-sm font-extrabold text-ink transition duration-200 hover:-translate-y-1 hover:bg-[#3be377] sm:bottom-6 sm:right-6',
+        className,
+      ]}
+      aria-label={`${label} — opens WhatsApp in a new tab`}
+    >
+      <Icon name="whatsapp" size={25} />
+      <span class="hidden pr-1 sm:inline">Chat with us</span>
+    </a>
+  ) : (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      class:list={['btn btn-whatsapp', className]}
+      aria-label={`${label} — opens WhatsApp in a new tab`}
+    >
+      <Icon name="whatsapp" size={19} />
+      <span>{label}</span>
+    </a>
+  )
+}

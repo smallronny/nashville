@@ -1,0 +1,67 @@
+---
+import { faqs, site } from '../data/site';
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+---
+
+<section id="faq" class="section relative overflow-hidden bg-cream" aria-labelledby="faq-title">
+  <div
+    class="pointer-events-none absolute -right-20 bottom-10 h-64 w-64 rounded-full bg-sun/20 blur-2xl"
+    aria-hidden="true"
+  ></div>
+
+  <div class="container-page relative">
+    <div class="grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+      <div class="reveal self-start lg:sticky lg:top-28">
+        <p class="eyebrow">Good to know</p>
+        <h2 id="faq-title" class="display-title mt-5">
+          Questions?<br />
+          We've got answers.
+        </h2>
+        <p class="lead mt-5 max-w-md">
+          Everything you need to know before the glue comes out. If you don't find what
+          you're looking for, we're always happy to help.
+        </p>
+
+        <div class="mt-8 max-w-md rounded-[2rem] border-2 border-ink/10 bg-paper p-6 shadow-soft">
+          <span class="flex h-11 w-11 items-center justify-center rounded-full bg-mint text-ink">
+            <Icon name="heart" size={20} />
+          </span>
+          <p class="mt-4 font-display text-2xl font-semibold tracking-[-0.02em]">
+            Still curious?
+          </p>
+          <p class="mt-1.5 text-sm leading-relaxed text-ink/65">
+            Tell us about your date, your crew, and your crafty ideas.
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <WhatsAppButton label="Ask us anything" class="!min-h-11 !px-5 !text-xs" />
+            <a href={`mailto:${site.email}`} class="btn btn-secondary !min-h-11 !px-5 !text-xs">
+              <Icon name="mail" size={16} />
+              Email us
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" style="--reveal-delay: 80ms">
+        <div class="border-t border-ink/15">
+          {
+            faqs.map((faq, index) => (
+              <details class="faq-item group border-b border-ink/15" open={index === 0}>
+                <summary class="faq-question flex cursor-pointer list-none items-center justify-between gap-5 py-5 font-display text-xl font-semibold tracking-[-0.015em] transition-colors hover:text-ocean-dark sm:py-6 sm:text-2xl">
+                  <span>{faq.question}</span>
+                  <span class="faq-icon flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-ink/15 bg-paper text-ink transition-transform duration-300">
+                    <Icon name="plus" size={17} strokeWidth={2.2} />
+                  </span>
+                </summary>
+                <div class="max-w-2xl pb-6 pr-10 text-sm leading-relaxed text-ink/70 sm:text-base">
+                  {faq.answer}
+                </div>
+              </details>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

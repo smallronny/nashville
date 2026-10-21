@@ -1,0 +1,120 @@
+---
+import { Image } from 'astro:assets';
+import { gallery } from '../data/site';
+import Icon from './Icon.astro';
+
+const mainImage = gallery[6];
+const detailImage = gallery[7];
+
+const stats = [
+  { value: '3', label: 'signature party themes' },
+  { value: '10', label: 'kids per package' },
+  { value: '0', label: 'craft supplies to bring' },
+];
+---
+
+<section id="about" class="section relative overflow-hidden bg-cream" aria-labelledby="about-title">
+  <div class="pointer-events-none absolute -left-32 top-24 h-80 w-80 rounded-full bg-mint/70 blur-sm" aria-hidden="true"></div>
+
+  <div class="container-page relative">
+    <div class="grid items-center gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
+      <div class="reveal relative mx-auto w-full max-w-[30rem] pb-10 pl-5 sm:pl-10 lg:pb-14">
+        <div class="photo-frame relative overflow-hidden rounded-[2.5rem] rotate-[-2deg]">
+          <Image
+            src={mainImage.src}
+            alt={mainImage.alt}
+            widths={[420, 560, 760]}
+            sizes="(max-width: 1024px) 88vw, 42vw"
+            class="aspect-[4/5] w-full object-cover"
+            quality={84}
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="photo-frame absolute -right-2 top-8 w-28 rotate-[5deg] overflow-hidden rounded-2xl sm:-right-4 sm:w-40 lg:w-44"
+        >
+          <Image
+            src={detailImage.src}
+            alt={detailImage.alt}
+            widths={[180, 280, 380]}
+            sizes="(max-width: 640px) 112px, 176px"
+            class="aspect-[4/5] w-full object-cover"
+            quality={82}
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="absolute -bottom-2 left-0 max-w-[16rem] rotate-[-3deg] rounded-[1.75rem] border-2 border-ink bg-coral px-6 py-5 text-ink shadow-sticker sm:-left-4 sm:max-w-[19rem] sm:px-7 sm:py-6"
+        >
+          <Icon name="sparkles" size={22} class="mb-2" />
+          <p class="font-display text-xl font-semibold leading-snug tracking-[-0.02em] sm:text-2xl">
+            Creating memories, crafting joy.
+          </p>
+        </div>
+
+        <span
+          class="absolute -right-1 -top-4 flex h-16 w-16 rotate-12 items-center justify-center rounded-full border-2 border-ink bg-sun text-ink shadow-soft sm:h-20 sm:w-20"
+          aria-hidden="true"
+        >
+          <Icon name="star" size={28} />
+        </span>
+      </div>
+
+      <div class="reveal" style="--reveal-delay: 80ms">
+        <p class="eyebrow">Our story</p>
+        <h2 id="about-title" class="display-title mt-5">
+          A little paint.<br />
+          A lot of joy.
+        </h2>
+
+        <div class="mt-6 space-y-4 text-base leading-relaxed text-ink/75 sm:text-lg">
+          <p>
+            Welcome to Nashville Crafting Club, your destination for family crafting in the
+            heart of Nashville. Our mission is simple: give families an easy way to create,
+            play, and make memories together.
+          </p>
+          <p>
+            With a range of art activities, crafts, and interactive games, we offer something
+            for everyone. We supply all the necessary materials and guide children through
+            exciting projects they can take home at the end of the event.
+          </p>
+          <p>
+            Whether you're planning a birthday, a family celebration, or a creative
+            get-together, we bring the fun directly to your location.
+          </p>
+        </div>
+
+        <dl class="mt-9 grid grid-cols-3 divide-x divide-ink/15 border-y border-ink/15 py-5">
+          {
+            stats.map((stat) => (
+              <div class="px-3 first:pl-0 last:pr-0 sm:px-5">
+                <dt class="sr-only">{stat.label}</dt>
+                <dd>
+                  <span class="block font-display text-4xl font-semibold leading-none text-ocean-dark sm:text-5xl">
+                    {stat.value}
+                  </span>
+                  <span class="mt-2 block text-[0.7rem] font-extrabold leading-snug text-ink/60 sm:text-xs">
+                    {stat.label}
+                  </span>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <a href="#gallery" class="btn btn-secondary">
+            See our parties
+            <Icon name="camera" size={17} />
+          </a>
+          <a href="#contact" class="btn-link">
+            Plan your celebration
+            <Icon name="arrow-up-right" size={15} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

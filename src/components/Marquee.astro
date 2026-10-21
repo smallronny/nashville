@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+
+const items = [
+  'Slime parties',
+  'Sand art',
+  'Plush pet adoptions',
+  'Painting',
+  'Creative games',
+  'Family fun',
+];
+---
+
+<div class="marquee border-y-2 border-ink" aria-label="Craft party highlights">
+  <div class="marquee-track">
+    {
+      [false, true].map((isDuplicate) => (
+        <div class="marquee-group" aria-hidden={isDuplicate ? 'true' : undefined}>
+          {items.map((item) => (
+            <span class="marquee-item">
+              {item}
+              <Icon name="star" size={12} class="text-sun" />
+            </span>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
