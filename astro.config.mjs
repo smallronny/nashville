@@ -29,4 +29,11 @@ export default defineConfig({
   devToolbar: {
     enabled: false,
   },
+  site: 'https://nashvillecraftingclub.com',
+  base: '/astro',
 });
+
+
+ 
+
+ 
