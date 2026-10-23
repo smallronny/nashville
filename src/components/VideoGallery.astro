@@ -118,6 +118,22 @@ const videos = [
     const card = videoEl.closest('.video-card') as HTMLElement | null;
     const overlay = card?.querySelector<HTMLElement>('.video-overlay');
 
+    // Seek to 1 s once metadata is ready so the browser renders a real frame
+    // instead of showing a black placeholder before the user clicks play.
+    const seekToThumbnail = () => {
+      if (videoEl.duration >= 1) {
+        videoEl.currentTime = 1;
+      } else if (videoEl.duration > 0) {
+        videoEl.currentTime = videoEl.duration * 0.1;
+      }
+    };
+
+    if (videoEl.readyState >= 1) {
+      seekToThumbnail();
+    } else {
+      videoEl.addEventListener('loadedmetadata', seekToThumbnail, { once: true });
+    }
+
     videoEl.addEventListener('click', () => {
       if (videoEl.paused) {
         // Pause all other videos
