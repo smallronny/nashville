@@ -1,62 +1,37 @@
-name: Deploy to GitHub Pages
+name: Deploy Astro to cPanel
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
+    branches: [ "main" ] # Cambia "main" por "master" si tu rama principal se llama así
 
 jobs:
-  build:
+  web-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+      # 1. Clonar el repositorio
+      - name: Get latest code
+        uses: actions/checkout@v4
 
-      # By default the workflow assumes a GitHub Pages project URL:
-      # https://<owner>.github.io/<repository>/
-      # To use a custom domain, create a repository variable named SITE_URL
-      # (Settings → Secrets and variables → Actions → Variables) with
-      # https://nashvillecraftingclub.com and optionally BASE_PATH=/.
-      - name: Configure Astro for GitHub Pages
-        env:
-          CUSTOM_SITE_URL: ${{ vars.SITE_URL }}
-          CUSTOM_BASE_PATH: ${{ vars.BASE_PATH }}
-        run: |
-          if [ -n "$CUSTOM_SITE_URL" ]; then
-            echo "SITE_URL=$CUSTOM_SITE_URL" >> "$GITHUB_ENV"
-            echo "BASE_PATH=${CUSTOM_BASE_PATH:-/}" >> "$GITHUB_ENV"
-          else
-            echo "SITE_URL=https://${GITHUB_REPOSITORY_OWNER}.github.io" >> "$GITHUB_ENV"
-            if [[ "${GITHUB_REPOSITORY#*/}" == *.github.io ]]; then
-              echo "BASE_PATH=/" >> "$GITHUB_ENV"
-            else
-              echo "BASE_PATH=/${GITHUB_REPOSITORY#*/}" >> "$GITHUB_ENV"
-            fi
-          fi
-
-      - name: Install, build and upload
-        uses: withastro/action@v6
+      # 2. Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 24
-        env:
-          PUBLIC_FORMSPREE_ID: ${{ vars.PUBLIC_FORMSPREE_ID }}
+          node-version: 20
+          cache: 'npm' # O 'pnpm' / 'yarn' según el gestor que uses
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      # 3. Instalar dependencias y compilar Astro
+      - name: Install dependencies and Build
+        run: |
+          npm ci
+          npm run build
+
+      # 4. Subir archivos compilados a cPanel vía FTP
+      - name: Sync files to cPanel
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/ # Carpeta que genera Astro al compilar
+          server-dir: /public_html/astro/ # Ruta de destino en tu cPanel (ajusta si está en un subdominio)
