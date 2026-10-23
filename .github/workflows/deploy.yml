@@ -34,4 +34,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/ # Carpeta que genera Astro al compilar
-          server-dir: /public_html/astro/ # Ruta de destino en tu cPanel (ajusta si está en un subdominio)
+          server-dir: / # Ruta de destino en tu cPanel (ajusta si está en un subdominio)
