@@ -18,7 +18,7 @@ export const site = {
   tagline: "Nashville's family craft party studio",
   description:
     'Mobile arts and crafts parties for families in Nashville. Choose a slime, sand art, or plush pet party—we bring the materials, guided projects, and creative fun to your celebration.',
-  email: 'info@nashvillecraftingclub.com',
+  email: 'nashvillecraftingclub@gmail.com',
   phoneDisplay: '636-577-2732',
   phoneHref: '+16365772732',
   whatsappNumber: '16365772732',
